@@ -1,0 +1,5 @@
+controllers:
+Auth:
+register:
+validate: name ,email
+save: user

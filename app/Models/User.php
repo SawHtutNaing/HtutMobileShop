@@ -3,11 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     use HasFactory, Notifiable;
 
@@ -21,6 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,7 +46,32 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // 'password' => 'hashed',
         ];
+    }
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return str_ends_with($this->email, 'admin@gmail.com');
+    }
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = $password;
+    }
+
+    public function Procuts()
+    {
+        return $this->belongsToMany(Product::class);
+    }
+
+    public function records()
+    {
+        return $this->hasMany(Income::class);
+    }
+
+
+    public function TotalExpense()
+    {
+
+        return $this->records->sum('money');
     }
 }
