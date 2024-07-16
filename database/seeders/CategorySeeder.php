@@ -32,7 +32,7 @@ class CategorySeeder extends Seeder
 
         // Category::insert($phoneBrands);
         // DB::table('categories')->insert($phoneBrands);
-        foreach ($phoneBrands as $key => $value) {
+        foreach ($phoneBrands as  $value) {
             Category::create(['name' => $value['name']]);
         }
     }

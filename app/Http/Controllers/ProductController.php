@@ -6,6 +6,8 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Income;
 use App\Models\Product;
+use App\Models\ProductUser;
+use App\Models\Tax;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -70,59 +72,67 @@ class ProductController extends Controller
     {
 
         $user = Auth::user();
+
         $products = $user->Procuts;
 
-
-        return view('home/cart', compact('products'));
+        $cartLists = $user->ItemsInCart();
+        return view('home/cart', compact('cartLists'));
     }
 
     public function addToCart(Product $product)
     {
+        $tax = Tax::currentTax();
         $user = auth()->user();
-
-        $product->users()->attach($user->id);
-
-
-
-
+        $price = $product->price - $product->promotion;
+        $priceAndTax = $price + (($price * $tax->tax_percent) / 100);
+        $product->users()->attach($user->id, ['amount' => $priceAndTax]);
         $product->quantity -= 1;
         $product->update();
         return redirect()->route('home');
     }
 
-    public function removeFromCart(Product $product)
+    public function removeFromCart(ProductUser $productUser)
     {
-        $user = auth()->user();
-        $product->users()->detach($user->id);
-        $product->quantity += 1;
-        $product->save();
+
+
+        $productUser->product['quantity'] += 1;
+        $productUser->product->update();
+        $productUser->delete();
 
         return redirect()->route('home');
     }
 
-    public function singlePurchase(Product $product)
+    public function singlePurchase(ProductUser $productUser)
     {
         $user = auth()->user();
-        $product->buyProduct();
-        // $product->quantity -= 1;
-        // $totalCost = $product->price - $product->promotion;
-        // $product->users()->detach($user->id);
-        // Income::create([
-        //     'money' => $totalCost,
-        //     'user_id' => $user->id,
-        //     'product_id' => $product->id,
-        //     'supplier_id' => $product->supplier_id
-        // ]);
-
+        Income::create([
+            'money' => $productUser->amount,
+            'user_id' => $productUser->user_id,
+            'product_id' => $productUser->product_id,
+            'supplier_id' => $productUser->product->supplier_id
+        ]);
+        $productUser->delete();
+        $productUser->product->sell_count += 1;
+        $productUser->product->update();
         return redirect()->route('home');
     }
 
     public function buldPurchase()
     {
         $user = auth()->user();
-        $products = $user->Procuts;
-        foreach ($products as  $product) {
-            $product->buyProduct();
+        $ItemsInCarts = $user->ItemsInCart();
+        foreach ($ItemsInCarts as  $ItemsInCart) {
+            Income::create([
+                'money' => $ItemsInCart->amount,
+                'user_id' => $ItemsInCart->user_id,
+                'product_id' => $ItemsInCart->product_id,
+                'supplier_id' => $ItemsInCart->product->supplier_id
+            ]);
+            $ItemsInCart->product->sell_count += 1;
+
+            $ItemsInCart->product->update();
+
+            $ItemsInCart->delete();
         }
         return redirect()->route('home');
     }

@@ -74,6 +74,7 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('supplier_id')->hidden(),
                 Tables\Columns\ImageColumn::make('image')->disk('phones'),
                 Tables\Columns\TextColumn::make('promotion')
                     ->searchable(),
@@ -89,12 +90,7 @@ class ProductResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                // TextColumn::make('Seller')->sortable(query: function (Builder $query, string $direction) {
-                //     return $query->orderBy('records_count', $direction);
-                // })
-                //     ->getStateUsing(function ($record) {
-                //         return $record->top_seller_yearly;
-                //     }),
+                TextColumn::make('sell_count')->label('Sell Count')->sortable()
             ])
             ->filters([
                 //
@@ -107,8 +103,7 @@ class ProductResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-                ExportBulkAction::make()
-                    ->exporter(ProductExporter::class)
+
             ]);
     }
 

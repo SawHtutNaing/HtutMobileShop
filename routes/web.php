@@ -53,13 +53,13 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 //add to cart 
 Route::get('/my-cart', [ProductController::class, 'CartIndex'])->name('cart-view');
-Route::get('/profile', [UserConctroller::class, 'record'])->name('profile');
-Route::get('/profile-setting', [UserConctroller::class, 'show'])->name('profileSetting');
+Route::get('/profile', [UserConctroller::class, 'show'])->name('profile');
+Route::get('/profile-setting', [UserConctroller::class, 'edit'])->name('profileSettingUpdate');
 Route::get('add-to-cart/{product}', [ProductController::class, 'addToCart'])->name('add-to-cart');
-Route::get('remove-from-cart/{product}', [ProductController::class, 'removeFromCart'])->name('remove-from-cart');
+Route::get('remove-from-cart/{productUser}', [ProductController::class, 'removeFromCart'])->name('remove-from-cart');
 
 
-Route::get('single-purchase/{product}', [ProductController::class, 'singlePurchase'])->name('sigle-purchase');
+Route::get('single-purchase/{productUser}', [ProductController::class, 'singlePurchase'])->name('sigle-purchase');
 Route::get('bluk-purchase', [ProductController::class, 'buldPurchase'])->name('bulk-purchase');
 
 

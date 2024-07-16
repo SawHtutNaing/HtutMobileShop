@@ -29,7 +29,7 @@ class Product extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 
     public function buyProduct()
@@ -39,7 +39,7 @@ class Product extends Model
 
 
         $totalCost = ($this->price - $this->promotion);
-        $taxAndTotalCost = ($totalCost * $tax->tax_percent) /  100;
+        $taxAndTotalCost = $totalCost +  ($totalCost * $tax->tax_percent) /  100;
 
 
         $this->users()->detach($user->id);

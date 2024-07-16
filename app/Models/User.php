@@ -24,6 +24,10 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         'name',
         'email',
         'password',
+        'address',
+        'phone_number',
+        'address'
+
     ];
 
 
@@ -60,7 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     public function Procuts()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)->withTimestamps();
     }
 
     public function records()
@@ -73,5 +77,11 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     {
 
         return $this->records->sum('money');
+    }
+
+    public function ItemsInCart()
+    {
+
+        return ProductUser::where('user_id', $this->id)->get();
     }
 }

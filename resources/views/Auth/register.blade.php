@@ -41,6 +41,10 @@
                         <label for="phone_number" class="block text-gray-700 font-semibold mb-2">Your Phone</label>
                         <input type="text" name="phone_number" id="phone_number" class="w-full p-2 border border-gray-300 rounded" placeholder="Phone number" required minlength="11">
                     </div>
+                    {{-- <div class="mb-4">
+                        <label for="address" class="block text-gray-700 font-semibold mb-2">Your Address</label>
+                        <input type="text" name="address" id="phone_number" class="w-full p-2 border border-gray-300 rounded" placeholder="Phone number" required minlength="11">
+                    </div> --}}
                     
                     <div class="mb-4">
                         <label for="address" class="block text-gray-700 font-semibold mb-2">Address</label>

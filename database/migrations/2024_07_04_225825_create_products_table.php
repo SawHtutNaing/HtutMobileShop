@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('promotion');
             $table->string('storage_capacity');
             $table->string('quantity');
+            $table->string('sell_count')->default('0');
             $table->timestamps();
         });
     }
