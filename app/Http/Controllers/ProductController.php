@@ -8,6 +8,7 @@ use App\Models\Income;
 use App\Models\Product;
 use App\Models\ProductUser;
 use App\Models\Tax;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -135,5 +136,29 @@ class ProductController extends Controller
             $ItemsInCart->delete();
         }
         return redirect()->route('home');
+    }
+
+
+    public function filter(Request $request)
+    {
+
+        $query = Product::query();
+        if (!is_null($request->name)) {
+
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if (!is_null($request->min)) {
+
+            $query->where('price', '>',  $request->min);
+        }
+        if (!is_null($request->max)) {
+            $query->where('price',  '<',  $request->max);
+        }
+
+
+
+        $products = $query->get();
+
+        return view('home/index', compact('products'));
     }
 }

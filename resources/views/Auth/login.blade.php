@@ -45,9 +45,9 @@
     <p class="mt-6 text-center text-sm text-gray-600">
       Don't have an account? <a href="{{route('register')}}" class="font-medium text-indigo-600 hover:text-indigo-500">Register here</a>
     </p>
-    {{-- <p class="mt-1 text-center text-sm text-gray-600">
+    <p class="mt-1 text-center text-sm text-gray-600">
       Forgot your password? <a href="/forgot-password" class="font-medium text-indigo-600 hover:text-indigo-500">Click here</a>
-    </p> --}}
+    </p>
   </div>
 </div>
 @endsection

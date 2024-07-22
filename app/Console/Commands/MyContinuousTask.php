@@ -37,11 +37,9 @@ class MyContinuousTask extends Command
             $items  =  ProductUser::all();
             foreach ($items as $item) {
 
-                // $diffHour = $currentTime->diffInHours($item->created_at);
-                echo ($item->created_at . "\n");
-                echo ($currentTime . "\n");
+
                 $diffHour =    $item->created_at->diffInHours($currentTime);
-                echo ("diff hours are " . $diffHour . "\n");
+                // echo ("diff hours are " . $diffHour . "\n");
                 if (($diffHour > 24)) {
                     $item->product->quantity += 1;
                     $item->product->update();

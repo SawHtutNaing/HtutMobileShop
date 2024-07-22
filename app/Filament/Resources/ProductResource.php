@@ -71,6 +71,7 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('category.name')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('category_id')->hidden(),
                 Tables\Columns\TextColumn::make('price')
                     ->sortable()
                     ->searchable(),

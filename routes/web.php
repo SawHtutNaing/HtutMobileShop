@@ -8,7 +8,14 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
+use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 
+use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Support\Str;
+
+use Illuminate\Support\Facades\Password;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('verified');
@@ -54,9 +61,13 @@ Route::post('/email/verification-notification', function (Request $request) {
 //add to cart 
 Route::get('/my-cart', [ProductController::class, 'CartIndex'])->name('cart-view');
 Route::get('/profile', [UserConctroller::class, 'show'])->name('profile');
-Route::get('/profile-setting', [UserConctroller::class, 'edit'])->name('profileSettingUpdate');
+Route::get('/profile-setting', [UserConctroller::class, 'edit'])->name('profileSettingEdit');
+Route::post('/profile-setting', [UserConctroller::class, 'update'])->name('profileSettingUpdate');
 Route::get('add-to-cart/{product}', [ProductController::class, 'addToCart'])->name('add-to-cart');
 Route::get('remove-from-cart/{productUser}', [ProductController::class, 'removeFromCart'])->name('remove-from-cart');
+
+
+Route::get('search-by', [ProductController::class, 'filter'])->name('filter-product');
 
 
 Route::get('single-purchase/{productUser}', [ProductController::class, 'singlePurchase'])->name('sigle-purchase');
@@ -66,3 +77,46 @@ Route::get('bluk-purchase', [ProductController::class, 'buldPurchase'])->name('b
 //History record 
 
 Route::get('record', [UserConctroller::class, 'record'])->name('record');
+
+// -----------forgot password ---------------
+Route::get('/forgot-password', function () {
+    return view('Auth.forgot-password');
+})->middleware('guest')->name('password.request');
+Route::post('/forgot-password', function (Request $request) {
+    $request->validate(['email' => 'required|email']);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::RESET_LINK_SENT
+        ? back()->with(['status' => __($status)])
+        : back()->withErrors(['email' => __($status)]);
+})->middleware('guest')->name('password.email');
+Route::get('/reset-password/{token}', function (string $token) {
+    return view('Auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function (User $user, string $password) {
+            $user->forceFill([
+                'password' => $password
+            ])->setRememberToken(Str::random(60));
+
+            $user->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect()->route('login')->with('status', __($status))
+        : back()->withErrors(['email' => [__($status)]]);
+})->middleware('guest')->name('password.update');
