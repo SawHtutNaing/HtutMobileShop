@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserConctroller;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -18,7 +19,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
 
 
-Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('verified');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
 
 
 Route::get('/login', function () {
@@ -120,3 +122,6 @@ Route::post('/reset-password', function (Request $request) {
         ? redirect()->route('login')->with('status', __($status))
         : back()->withErrors(['email' => [__($status)]]);
 })->middleware('guest')->name('password.update');
+
+Route::resource('reviews', ReviewController::class);
+Route::get('/about', [HomeController::class, 'about'])->name('about');

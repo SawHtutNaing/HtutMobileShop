@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
 use App\Models\Income;
 use App\Models\Product;
 use App\Models\ProductUser;
@@ -42,7 +43,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return view('home/product-show', compact('product'));
     }
 
     /**
@@ -154,11 +155,14 @@ class ProductController extends Controller
         if (!is_null($request->max)) {
             $query->where('price',  '<',  $request->max);
         }
-
+        if (!is_null($request->category_id)) {
+            $query->where('category_id',   $request->category_id);
+        }
 
 
         $products = $query->get();
+        $categories = Category::all();
 
-        return view('home/index', compact('products'));
+        return view('home/index', ['products' => $products, 'categories' => $categories]);
     }
 }

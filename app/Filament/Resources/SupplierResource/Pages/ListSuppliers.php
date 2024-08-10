@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\SupplierResource\Pages;
 
+use App\Filament\Imports\SupplierImporter;
 use App\Filament\Resources\SupplierResource;
 use Filament\Actions;
+use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ListRecords;
 use pxlrbt\FilamentExcel\Columns\Column;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -21,12 +23,14 @@ class ListSuppliers extends ListRecords
                 ->exports([
                     ExcelExport::make()
                         ->fromTable()
-                        ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+                        ->withFilename(fn($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                         ->withColumns([
                             Column::make('updated_at'),
                         ])
                 ]),
+
+            ImportAction::make()->importer(SupplierImporter::class)
         ];
     }
 }

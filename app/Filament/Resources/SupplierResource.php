@@ -51,7 +51,14 @@ class SupplierResource extends Resource
                 })->native(false)
                     ->beforeStateDehydrated(function ($state) {
                         return $state;
-                    })->label('Brand Name')->searchable()
+                    })->label('Brand Name')->searchable(),
+                TextInput::make('color'),
+                TextInput::make('storage_capacity'),
+                TextInput::make('released_year'),
+                TextInput::make('camera_quality'),
+
+
+
             ]);
     }
 
@@ -72,7 +79,12 @@ class SupplierResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('category.name')->label('Brand')
+                TextColumn::make('category.name')->label('Brand'),
+                TextColumn::make('color'),
+                TextColumn::make('storage_capacity'),
+                TextColumn::make('released_year'),
+                TextColumn::make('camera_quality'),
+
             ])
             ->filters([
                 //

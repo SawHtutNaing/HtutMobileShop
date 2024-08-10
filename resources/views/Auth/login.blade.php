@@ -21,7 +21,7 @@
 
   <div class="w-full max-w-md">
     <div class="bg-white p-8 rounded-lg shadow-lg">
-      <form action="{{route('login')}}" method="POST" autocomplete="off" class="space-y-6">
+      <form id="loginForm" action="{{route('login')}}" method="POST" autocomplete="off" class="space-y-6">
         @csrf
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
@@ -50,4 +50,58 @@
     </p>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Show a loading alert
+    Swal.fire({
+      title: 'Signing in...',
+      text: 'Please wait while we log you in.',
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      allowOutsideClick: false,
+    });
+
+    // Perform the form submission
+    fetch(this.action, {
+      method: this.method,
+      body: new FormData(this),
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+      }
+    })
+    .then(response => response.json().then(data => ({ status: response.status, body: data })))
+    .then(({ status, body }) => {
+      if (status === 200) {
+        // Show success alert
+        Swal.fire({
+          icon: 'success',
+          title: 'Signed in successfully!',
+          text: 'You will be redirected shortly.',
+        }).then(() => {
+          window.location.href = body.redirect || '/';
+        });
+      } else {
+        // Show error alert
+        Swal.fire({
+          icon: 'error',
+          title: 'Sign in failed',
+          text: body.message || 'Please check your credentials and try again.'
+        });
+      }
+    })
+    .catch(error => {
+      // Show error alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Sign in failed',
+        text: 'An unexpected error occurred. Please try again.'
+      });
+    });
+  });
+</script>
 @endsection

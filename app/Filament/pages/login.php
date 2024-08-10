@@ -16,6 +16,7 @@ use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
+
 use Filament\Pages\SimplePage;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Blade;
@@ -26,7 +27,6 @@ use Illuminate\Support\Facades\Auth;
 /**
  * @property Form $form
  */
-
 class Login extends SimplePage
 {
     use InteractsWithFormActions;
@@ -38,12 +38,13 @@ class Login extends SimplePage
     protected static string $view = 'filament-panels::pages.auth.login';
 
     /**
-     * @var array<string, mixed> | nullfill
+     * @var array<string, mixed> | null
      */
     public ?array $data = [];
 
     public function mount(): void
     {
+
         if (Filament::auth()->check()) {
             redirect()->intended(Filament::getUrl());
         }
@@ -61,19 +62,16 @@ class Login extends SimplePage
             return null;
         }
 
+
         $data = $this->form->getState();
 
-        $data = $this->getCredentialsFromFormData($data);
+        // Custom plain text password authentication
         $user = User::where('email', $data['email'])->first();
         if ($user && $user->password === $data['password']) {
             Auth::login($user);
         } else {
             $this->throwFailureValidationException();
         }
-        // if (!Auth::attempt($this->getCredentialsFromFormData($data), $data['remember'] ?? false)) {
-        //     $this->throwFailureValidationException();
-        // }
-
 
         $user = Filament::auth()->user();
 

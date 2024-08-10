@@ -14,6 +14,9 @@
                 <li>
                     <a href="{{route('home')}}" class="block py-2 pl-3 pr-4 text-gray-700 rounded md:bg-transparent md:p-0 dark:text-white" aria-current="page">Home</a>
                 </li>
+                <li>
+                    <a href="{{route('about')}}" class="block py-2 pl-3 pr-4 text-gray-700 rounded md:bg-transparent md:p-0 dark:text-white" aria-current="page">About</a>
+                </li>
                 @guest
                 <li>
                     <a href="{{route('login')}}" class="block py-2 pl-3 pr-4 text-gray-700 rounded md:bg-transparent md:p-0 dark:text-white">Login</a>

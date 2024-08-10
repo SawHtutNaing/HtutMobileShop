@@ -72,4 +72,9 @@ class Product extends Model
     {
         return $this->records()->whereYear('created_at', now()->year)->count();
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

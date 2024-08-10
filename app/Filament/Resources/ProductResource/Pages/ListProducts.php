@@ -25,14 +25,14 @@ class ListProducts extends ListRecords
                 ->exports([
                     ExcelExport::make()
                         ->fromTable()
-                        ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+                        ->withFilename(fn($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                         ->withColumns([
                             Column::make('updated_at'),
                         ])
                 ]),
-            // ImportAction::make()
-            //     ->importer(ProductImporter::class)
+            ImportAction::make()
+                ->importer(ProductImporter::class)
 
         ];
     }
